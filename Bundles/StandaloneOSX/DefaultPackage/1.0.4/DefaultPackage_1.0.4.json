@@ -1,0 +1,651 @@
+{
+    "FileVersion": "2.2.5",
+    "EnableAddressable": true,
+    "LocationToLower": false,
+    "IncludeAssetGUID": false,
+    "OutputNameStyle": 2,
+    "BuildBundleType": 2,
+    "BuildPipeline": "ScriptableBuildPipeline",
+    "PackageName": "DefaultPackage",
+    "PackageVersion": "1.0.4",
+    "PackageNote": "3/21/2025 4:49:55 PM",
+    "AssetList": [
+        {
+            "Address": "music_background",
+            "AssetPath": "Assets/GameRes/Audio/music_background.wav",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Battle"
+            ],
+            "BundleID": 0
+        },
+        {
+            "Address": "sound_explosion_asteroid",
+            "AssetPath": "Assets/GameRes/Audio/sound_explosion_asteroid.wav",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Battle"
+            ],
+            "BundleID": 0
+        },
+        {
+            "Address": "sound_explosion_enemy",
+            "AssetPath": "Assets/GameRes/Audio/sound_explosion_enemy.wav",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Battle"
+            ],
+            "BundleID": 0
+        },
+        {
+            "Address": "sound_explosion_player",
+            "AssetPath": "Assets/GameRes/Audio/sound_explosion_player.wav",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Battle"
+            ],
+            "BundleID": 0
+        },
+        {
+            "Address": "sound_weapon_enemy",
+            "AssetPath": "Assets/GameRes/Audio/sound_weapon_enemy.wav",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Battle"
+            ],
+            "BundleID": 0
+        },
+        {
+            "Address": "sound_weapon_player",
+            "AssetPath": "Assets/GameRes/Audio/sound_weapon_player.wav",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Battle"
+            ],
+            "BundleID": 0
+        },
+        {
+            "Address": "mscorlib.dll",
+            "AssetPath": "Assets/GameRes/DLL/mscorlib.dll.bytes",
+            "AssetGUID": "",
+            "AssetTags": [
+                "DLL"
+            ],
+            "BundleID": 1
+        },
+        {
+            "Address": "System.Core.dll",
+            "AssetPath": "Assets/GameRes/DLL/System.Core.dll.bytes",
+            "AssetGUID": "",
+            "AssetTags": [
+                "DLL"
+            ],
+            "BundleID": 1
+        },
+        {
+            "Address": "System.dll",
+            "AssetPath": "Assets/GameRes/DLL/System.dll.bytes",
+            "AssetGUID": "",
+            "AssetTags": [
+                "DLL"
+            ],
+            "BundleID": 1
+        },
+        {
+            "Address": "TestHotFix.dll",
+            "AssetPath": "Assets/GameRes/DLL/TestHotFix.dll.bytes",
+            "AssetGUID": "",
+            "AssetTags": [
+                "DLL"
+            ],
+            "BundleID": 1
+        },
+        {
+            "Address": "engines_enemy",
+            "AssetPath": "Assets/GameRes/Effect/engines_enemy.prefab",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Battle"
+            ],
+            "BundleID": 2
+        },
+        {
+            "Address": "engines_player",
+            "AssetPath": "Assets/GameRes/Effect/engines_player.prefab",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Battle"
+            ],
+            "BundleID": 2
+        },
+        {
+            "Address": "explosion_asteroid",
+            "AssetPath": "Assets/GameRes/Effect/explosion_asteroid.prefab",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Battle"
+            ],
+            "BundleID": 2
+        },
+        {
+            "Address": "explosion_enemy",
+            "AssetPath": "Assets/GameRes/Effect/explosion_enemy.prefab",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Battle"
+            ],
+            "BundleID": 2
+        },
+        {
+            "Address": "explosion_player",
+            "AssetPath": "Assets/GameRes/Effect/explosion_player.prefab",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Battle"
+            ],
+            "BundleID": 2
+        },
+        {
+            "Address": "asteroid01",
+            "AssetPath": "Assets/GameRes/Entity/asteroid01.prefab",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Battle"
+            ],
+            "BundleID": 4
+        },
+        {
+            "Address": "asteroid02",
+            "AssetPath": "Assets/GameRes/Entity/asteroid02.prefab",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Battle"
+            ],
+            "BundleID": 4
+        },
+        {
+            "Address": "asteroid03",
+            "AssetPath": "Assets/GameRes/Entity/asteroid03.prefab",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Battle"
+            ],
+            "BundleID": 4
+        },
+        {
+            "Address": "enemy_bullet",
+            "AssetPath": "Assets/GameRes/Entity/enemy_bullet.prefab",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Battle"
+            ],
+            "BundleID": 4
+        },
+        {
+            "Address": "enemy_ship",
+            "AssetPath": "Assets/GameRes/Entity/enemy_ship.prefab",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Battle"
+            ],
+            "BundleID": 4
+        },
+        {
+            "Address": "player_bullet",
+            "AssetPath": "Assets/GameRes/Entity/player_bullet.prefab",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Battle"
+            ],
+            "BundleID": 4
+        },
+        {
+            "Address": "player_ship",
+            "AssetPath": "Assets/GameRes/Entity/player_ship.prefab",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Battle"
+            ],
+            "BundleID": 4
+        },
+        {
+            "Address": "scene_battle",
+            "AssetPath": "Assets/GameRes/Scene/scene_battle.unity",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Scene"
+            ],
+            "BundleID": 15
+        },
+        {
+            "Address": "scene_battleSettings",
+            "AssetPath": "Assets/GameRes/Scene/scene_battleSettings.lighting",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Scene"
+            ],
+            "BundleID": 16
+        },
+        {
+            "Address": "scene_home",
+            "AssetPath": "Assets/GameRes/Scene/scene_home.unity",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Scene"
+            ],
+            "BundleID": 17
+        },
+        {
+            "Address": "ReflectionProbe-0",
+            "AssetPath": "Assets/GameRes/Scene/scene_home/ReflectionProbe-0.exr",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Scene"
+            ],
+            "BundleID": 18
+        },
+        {
+            "Address": "scene_homeSettings",
+            "AssetPath": "Assets/GameRes/Scene/scene_homeSettings.lighting",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Scene"
+            ],
+            "BundleID": 19
+        },
+        {
+            "Address": "UIBattle",
+            "AssetPath": "Assets/GameRes/UIPanel/UIBattle.prefab",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Ugui"
+            ],
+            "BundleID": 22
+        },
+        {
+            "Address": "UIHome",
+            "AssetPath": "Assets/GameRes/UIPanel/UIHome.prefab",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Ugui"
+            ],
+            "BundleID": 22
+        },
+        {
+            "Address": "UILoading",
+            "AssetPath": "Assets/GameRes/UIPanel/UILoading.prefab",
+            "AssetGUID": "",
+            "AssetTags": [
+                "Ugui"
+            ],
+            "BundleID": 22
+        }
+    ],
+    "BundleList": [
+        {
+            "BundleName": "defaultpackage_assets_gameres_audio.bundle",
+            "UnityCRC": 3309595782,
+            "FileHash": "bc997a1b839312ae675d3cde88eb108d",
+            "FileCRC": "18fc8908",
+            "FileSize": 1034481,
+            "Encrypted": false,
+            "Tags": [
+                "Battle",
+                "Scene"
+            ],
+            "DependIDs": []
+        },
+        {
+            "BundleName": "defaultpackage_assets_gameres_dll.bundle",
+            "UnityCRC": 403590729,
+            "FileHash": "785e8b2d6b5a8b5a6b24c610923fba64",
+            "FileCRC": "75689301",
+            "FileSize": 975756,
+            "Encrypted": false,
+            "Tags": [
+                "DLL"
+            ],
+            "DependIDs": []
+        },
+        {
+            "BundleName": "defaultpackage_assets_gameres_effect.bundle",
+            "UnityCRC": 100380897,
+            "FileHash": "79df5f348d388cefb8fec3ef9eeabbcf",
+            "FileCRC": "ae300df4",
+            "FileSize": 37418,
+            "Encrypted": false,
+            "Tags": [
+                "Battle"
+            ],
+            "DependIDs": [
+                0,
+                3,
+                24
+            ]
+        },
+        {
+            "BundleName": "defaultpackage_assets_gameres_effectart.bundle",
+            "UnityCRC": 765513649,
+            "FileHash": "60a7e76fefbcba04b1699c983fe010d8",
+            "FileCRC": "75f95a7c",
+            "FileSize": 44894,
+            "Encrypted": false,
+            "Tags": [
+                "Battle",
+                "Scene"
+            ],
+            "DependIDs": [
+                24
+            ]
+        },
+        {
+            "BundleName": "defaultpackage_assets_gameres_entity.bundle",
+            "UnityCRC": 498426094,
+            "FileHash": "1b8ab6a9908572de07a780a20be3ffeb",
+            "FileCRC": "70cb724e",
+            "FileSize": 36072,
+            "Encrypted": false,
+            "Tags": [
+                "Battle"
+            ],
+            "DependIDs": [
+                0,
+                3,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                24
+            ]
+        },
+        {
+            "BundleName": "defaultpackage_assets_gameres_entityart_prop_asteroid_01.bundle",
+            "UnityCRC": 168900372,
+            "FileHash": "892f9ae8c636f207bb1b11d93c428a7d",
+            "FileCRC": "afb0234f",
+            "FileSize": 154677,
+            "Encrypted": false,
+            "Tags": [
+                "Battle"
+            ],
+            "DependIDs": [
+                6,
+                24
+            ]
+        },
+        {
+            "BundleName": "defaultpackage_assets_gameres_entityart_prop_asteroid_01_materials.bundle",
+            "UnityCRC": 2522258300,
+            "FileHash": "fc72fa917a49bd20649840ae205f2980",
+            "FileCRC": "6f362d18",
+            "FileSize": 2728,
+            "Encrypted": false,
+            "Tags": [
+                "Battle"
+            ],
+            "DependIDs": [
+                24
+            ]
+        },
+        {
+            "BundleName": "defaultpackage_assets_gameres_entityart_prop_asteroid_02.bundle",
+            "UnityCRC": 2182821894,
+            "FileHash": "f37e898e4907e026fda1014e25fe2806",
+            "FileCRC": "d61f3dc0",
+            "FileSize": 142472,
+            "Encrypted": false,
+            "Tags": [
+                "Battle"
+            ],
+            "DependIDs": [
+                8,
+                24
+            ]
+        },
+        {
+            "BundleName": "defaultpackage_assets_gameres_entityart_prop_asteroid_02_materials.bundle",
+            "UnityCRC": 3714141126,
+            "FileHash": "2178d2d82ae0191ea960d4153468565a",
+            "FileCRC": "20afcf0c",
+            "FileSize": 2694,
+            "Encrypted": false,
+            "Tags": [
+                "Battle"
+            ],
+            "DependIDs": [
+                24
+            ]
+        },
+        {
+            "BundleName": "defaultpackage_assets_gameres_entityart_prop_asteroid_03.bundle",
+            "UnityCRC": 401092376,
+            "FileHash": "643edbb8d0fc41c7f481de6e21b0ee55",
+            "FileCRC": "9b4bc9ef",
+            "FileSize": 127202,
+            "Encrypted": false,
+            "Tags": [
+                "Battle"
+            ],
+            "DependIDs": [
+                10,
+                24
+            ]
+        },
+        {
+            "BundleName": "defaultpackage_assets_gameres_entityart_prop_asteroid_03_materials.bundle",
+            "UnityCRC": 1476034711,
+            "FileHash": "e7a924a9b5fec0057c261cc8b0b3edc6",
+            "FileCRC": "cea4d363",
+            "FileSize": 2694,
+            "Encrypted": false,
+            "Tags": [
+                "Battle"
+            ],
+            "DependIDs": [
+                24
+            ]
+        },
+        {
+            "BundleName": "defaultpackage_assets_gameres_entityart_vehicle_enemyship.bundle",
+            "UnityCRC": 860125981,
+            "FileHash": "98c8f81b385a292d8e70c5f59941db66",
+            "FileCRC": "00ca4c13",
+            "FileSize": 611685,
+            "Encrypted": false,
+            "Tags": [
+                "Battle"
+            ],
+            "DependIDs": [
+                12,
+                24
+            ]
+        },
+        {
+            "BundleName": "defaultpackage_assets_gameres_entityart_vehicle_enemyship_materials.bundle",
+            "UnityCRC": 1946107178,
+            "FileHash": "25bc14d8daa0dba6a8f4e2d78cae9f4a",
+            "FileCRC": "61fdb373",
+            "FileSize": 2818,
+            "Encrypted": false,
+            "Tags": [
+                "Battle"
+            ],
+            "DependIDs": [
+                24
+            ]
+        },
+        {
+            "BundleName": "defaultpackage_assets_gameres_entityart_vehicle_playership.bundle",
+            "UnityCRC": 3701896428,
+            "FileHash": "e9209c20f32284004036e530ee57d49f",
+            "FileCRC": "3a23cafa",
+            "FileSize": 549718,
+            "Encrypted": false,
+            "Tags": [
+                "Battle"
+            ],
+            "DependIDs": [
+                14,
+                24
+            ]
+        },
+        {
+            "BundleName": "defaultpackage_assets_gameres_entityart_vehicle_playership_materials.bundle",
+            "UnityCRC": 601936415,
+            "FileHash": "e11c610e45bd24a9141f301f6f3e9a48",
+            "FileCRC": "7192e980",
+            "FileSize": 2798,
+            "Encrypted": false,
+            "Tags": [
+                "Battle"
+            ],
+            "DependIDs": [
+                24
+            ]
+        },
+        {
+            "BundleName": "defaultpackage_assets_gameres_scene_scene_battle.bundle",
+            "UnityCRC": 1677039499,
+            "FileHash": "09f686d4eb1177236b1e640717ed19d9",
+            "FileCRC": "9cb6f94a",
+            "FileSize": 40899,
+            "Encrypted": false,
+            "Tags": [
+                "Scene"
+            ],
+            "DependIDs": [
+                0,
+                3,
+                16,
+                20,
+                24
+            ]
+        },
+        {
+            "BundleName": "defaultpackage_assets_gameres_scene_scene_battlesettings.bundle",
+            "UnityCRC": 1054895448,
+            "FileHash": "11a9558898aa846969878ccced63c003",
+            "FileCRC": "b82b158b",
+            "FileSize": 1381,
+            "Encrypted": false,
+            "Tags": [
+                "Scene"
+            ],
+            "DependIDs": []
+        },
+        {
+            "BundleName": "defaultpackage_assets_gameres_scene_scene_home.bundle",
+            "UnityCRC": 1336723115,
+            "FileHash": "dd8784a9cfbebf58397c606da89ddede",
+            "FileCRC": "eaf6fec4",
+            "FileSize": 10148,
+            "Encrypted": false,
+            "Tags": [
+                "Scene"
+            ],
+            "DependIDs": [
+                19,
+                20,
+                24
+            ]
+        },
+        {
+            "BundleName": "defaultpackage_assets_gameres_scene_scene_home_reflectionprobe-0.bundle",
+            "UnityCRC": 2111122485,
+            "FileHash": "2de45376bbd3f0278817346733df7651",
+            "FileCRC": "789bd658",
+            "FileSize": 87612,
+            "Encrypted": false,
+            "Tags": [
+                "Scene"
+            ],
+            "DependIDs": []
+        },
+        {
+            "BundleName": "defaultpackage_assets_gameres_scene_scene_homesettings.bundle",
+            "UnityCRC": 2639257074,
+            "FileHash": "3d268ea3928635bdd3031501ef783188",
+            "FileCRC": "14926ee6",
+            "FileSize": 1381,
+            "Encrypted": false,
+            "Tags": [
+                "Scene"
+            ],
+            "DependIDs": []
+        },
+        {
+            "BundleName": "defaultpackage_assets_gameres_sceneart.bundle",
+            "UnityCRC": 2216043563,
+            "FileHash": "d63845674fc60cde5a10adce92519c64",
+            "FileCRC": "79b72da6",
+            "FileSize": 2083177,
+            "Encrypted": false,
+            "Tags": [
+                "Scene"
+            ],
+            "DependIDs": [
+                24
+            ]
+        },
+        {
+            "BundleName": "defaultpackage_assets_gameres_uifont.bundle",
+            "UnityCRC": 3032423652,
+            "FileHash": "7234b00986b69a3f255967a083953cb0",
+            "FileCRC": "d9e16848",
+            "FileSize": 104022,
+            "Encrypted": false,
+            "Tags": [
+                "Ugui"
+            ],
+            "DependIDs": []
+        },
+        {
+            "BundleName": "defaultpackage_assets_gameres_uipanel.bundle",
+            "UnityCRC": 3964293562,
+            "FileHash": "057d1e433bf86745898399296de6a428",
+            "FileCRC": "f13cdc1f",
+            "FileSize": 10696,
+            "Encrypted": false,
+            "Tags": [
+                "Ugui"
+            ],
+            "DependIDs": [
+                21,
+                23,
+                24
+            ]
+        },
+        {
+            "BundleName": "defaultpackage_assets_gameres_uipanelart.bundle",
+            "UnityCRC": 814366926,
+            "FileHash": "bad5bf343f87ab450447acee01bdc7b1",
+            "FileCRC": "62d115cb",
+            "FileSize": 1172777,
+            "Encrypted": false,
+            "Tags": [
+                "Ugui"
+            ],
+            "DependIDs": []
+        },
+        {
+            "BundleName": "defaultpackage_unityshaders.bundle",
+            "UnityCRC": 1817055689,
+            "FileHash": "c4d6f114a3e08ad2c8b37a48fb7180ac",
+            "FileCRC": "bb826868",
+            "FileSize": 111213,
+            "Encrypted": false,
+            "Tags": [
+                "Battle",
+                "Scene",
+                "Ugui"
+            ],
+            "DependIDs": []
+        }
+    ]
+}

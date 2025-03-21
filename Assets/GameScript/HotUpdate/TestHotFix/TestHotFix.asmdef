@@ -1,0 +1,16 @@
+{
+    "name": "TestHotFix",
+    "rootNamespace": "",
+    "references": [
+        "GUID:4e63f43a979584f84bc1155d51d1fd93"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
