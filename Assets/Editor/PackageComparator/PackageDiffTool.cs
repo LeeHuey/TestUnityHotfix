@@ -14,103 +14,50 @@ namespace TEngine.Editor
     /// 热更资源包差异化打包工具
     /// </summary>
     public static class PackageDiffTool
-    {
-        
+    {        
         /// <summary>
-        /// 在BuildCurrentPlatformAB方法执行后进行差异化对比和打包
+        /// 在YooAsset资源包构建完成后进行热更资源包差异化打包
         /// </summary>
-        [MenuItem("Tools/Quick Build/热更资源包差异化打包", priority = 92)]
         public static void BuildDiffPackage()
         {
             Debug.Log("开始进行热更资源包差异化打包...");
-            
-            // 获取资源包的路径
-            string outputRoot = AssetBundleBuilderHelper.GetDefaultBuildOutputRoot();
-            string platformName = EditorUserBuildSettings.activeBuildTarget.ToString();
-            string packageOutputDirectory = $"{outputRoot}/{platformName}/DefaultPackage";
-            
+            string packageOutputDirectory = GetPackageOutputDirectory();
             if (!Directory.Exists(packageOutputDirectory))
             {
                 Debug.LogError($"输出目录不存在: {packageOutputDirectory}");
                 return;
             }
+
             string currentVersion = GetCurrentVersion();
             Debug.Log($"当前版本: {currentVersion}");
-            
-            // // 创建版本子目录
             string currentVersionDir = Path.Combine(packageOutputDirectory, currentVersion);
             if (!Directory.Exists(currentVersionDir))
             {
-                Directory.CreateDirectory(currentVersionDir);
+                Debug.LogError($"当前版本目录不存在: {currentVersionDir}");
+                return;
             }
             
             // 查找当前版本的资源清单文件
             string manifestFileName = $"{currentVersion}/DefaultPackage_{currentVersion}.bytes";
             string manifestFilePath = Path.Combine(packageOutputDirectory, manifestFileName);
-            
             if (!File.Exists(manifestFilePath))
             {
                 Debug.LogError($"找不到当前版本的资源清单文件: {manifestFilePath}");
                 return;
             }
-            string manifestDestPath = manifestFilePath;
-            
-            // 将所有的AB文件移动到版本目录中
-            List<string> abFiles = new List<string>();
-            foreach (var file in Directory.GetFiles(packageOutputDirectory))
-            {
-                string fileName = Path.GetFileName(file);
-                
-                // 跳过清单文件和版本文件
-                if (fileName == manifestFileName || 
-                    fileName == "DefaultPackage.version" ||
-                    fileName == "version.txt")
-                    continue;
-                
-                // 其它文件应该是资源包文件，移动到版本目录中
-                string destPath = Path.Combine(currentVersionDir, fileName);
-                
-                // 如果目标文件夹不存在，创建它
-                string destDir = Path.GetDirectoryName(destPath);
-                if (!Directory.Exists(destDir))
-                    Directory.CreateDirectory(destDir);
-                
-                if (File.Exists(destPath))
-                    File.Delete(destPath);
-                    
-                File.Copy(file, destPath);
-                abFiles.Add(fileName);
-            }
-            
-            // 查找上一个版本
+
+            //资源包中文件名列表（不包含清单文件和版本文件）
+            string curPackageDirectory = Path.Combine(packageOutputDirectory, $"{currentVersion}");
+            List<string> abFiles = CopyFileNamesToList(curPackageDirectory, manifestFileName);
+
             string previousVersion = FindPreviousVersion(packageOutputDirectory, currentVersion);
-            List<string> diffFiles = new List<string>();
-            
-            if (!string.IsNullOrEmpty(previousVersion))
-            {
-                Debug.Log($"发现上一版本: {previousVersion}");
-                string previousVersionDir = Path.Combine(packageOutputDirectory, previousVersion);
-                
-                if (Directory.Exists(previousVersionDir))
-                {
-                    // 对比两个版本的资源包
-                    string previousManifestPath = Path.Combine(previousVersionDir, $"DefaultPackage_{previousVersion}.bytes");
-                    diffFiles = CompareVersionPackages(previousManifestPath, manifestDestPath);
-                }
-                else
-                {
-                    Debug.LogWarning($"上一版本目录不存在: {previousVersionDir}, 将打包全部文件");
-                    diffFiles.AddRange(abFiles);
-                }
-            }
-            else
-            {
-                Debug.LogWarning("找不到上一版本，将打包全部文件");
-                diffFiles.AddRange(abFiles);
-            }
+            Debug.Log($"上一版本: {previousVersion}");
+
+            //获取差异文件列表
+            List<string> diffFiles = GetDiffPackageFileName(packageOutputDirectory, previousVersion, manifestFilePath, abFiles);
             
             // 创建差异包输出目录
-            string diffOutputDir = $"{outputRoot}/{platformName}/DiffPackage";
+            string diffOutputDir = GetDiffPackageOutputDirectory();
             if (!Directory.Exists(diffOutputDir))
                 Directory.CreateDirectory(diffOutputDir);
                 
@@ -129,7 +76,7 @@ namespace TEngine.Editor
             // 复制清单文件到版本目录
             string manifestDestFileName = $"DefaultPackage_{currentVersion}.bytes";
             string manifestOutputPath = Path.Combine(diffVersionDir, manifestDestFileName);
-            File.Copy(manifestDestPath, manifestOutputPath, true);
+            File.Copy(manifestFilePath, manifestOutputPath, true);
             Debug.Log($"复制清单文件: {manifestDestFileName}");
             
             // 只有当有差异文件时才创建zip包
@@ -177,6 +124,26 @@ namespace TEngine.Editor
             Debug.Log($"热更资源包差异化打包完成! 输出路径: {diffVersionDir}");
             EditorUtility.RevealInFinder(diffVersionDir);
         }
+
+        /// <summary>
+        /// 获取YooAsset资源包输出路径
+        /// </summary>        
+        private static string GetPackageOutputDirectory() 
+        {
+            string outputRoot = AssetBundleBuilderHelper.GetDefaultBuildOutputRoot();
+            string platformName = EditorUserBuildSettings.activeBuildTarget.ToString();
+            return $"{outputRoot}/{platformName}/DefaultPackage";
+        }
+
+        /// <summary>
+        /// 获取热更补丁包输出路径
+        /// </summary>        
+        private static string GetDiffPackageOutputDirectory() 
+        {
+            string outputRoot = AssetBundleBuilderHelper.GetDefaultBuildOutputRoot();
+            string platformName = EditorUserBuildSettings.activeBuildTarget.ToString();
+            return $"{outputRoot}/{platformName}/DiffPackage";
+        }
         
         /// <summary>
         /// 获取当前版本号
@@ -194,7 +161,7 @@ namespace TEngine.Editor
             }
             else
             {
-                currentVersion = "1.0.1"; // 初始版本
+                currentVersion = "1"; // 初始版本
                 File.WriteAllText(versionFilePath, currentVersion);
             }
             
@@ -204,61 +171,67 @@ namespace TEngine.Editor
         /// <summary>
         /// 查找上一个版本号
         /// </summary>
+        private static List<string> CopyFileNamesToList(string packageOutputDirectory, string manifestFileName)
+        {
+            // Debug.Log($"CopyFileNamesToList packageOutputDirectory: {packageOutputDirectory}");
+            // Debug.Log($"CopyFileNamesToList manifestFileName: {manifestFileName}");
+            List<string> abFiles = new List<string>();
+            foreach (var file in Directory.GetFiles(packageOutputDirectory))
+            {
+                string fileName = Path.GetFileName(file);
+                
+                // 跳过清单文件和版本文件
+                if (fileName == manifestFileName || 
+                    fileName == "DefaultPackage.version" ||
+                    fileName == "version.txt")
+                    continue;
+                // Debug.Log($"CopyFileNamesToList abFiles: {fileName}");
+                abFiles.Add(fileName);
+            }
+            return abFiles;
+        }
+
+        /// <summary>
+        /// 查找上一个版本号
+        /// </summary>
         private static string FindPreviousVersion(string packageOutputDirectory, string currentVersion)
         {
-            string[] versionDirs = Directory.GetDirectories(packageOutputDirectory)
-                .Select(Path.GetFileName)
-                .Where(dir => dir != currentVersion && IsValidVersion(dir))
-                .ToArray();
-                
-            if (versionDirs.Length == 0)
-                return null;
-                
-            // 按版本号从大到小排序
-            Array.Sort(versionDirs, (a, b) => CompareVersions(b, a));
-            
-            return versionDirs.FirstOrDefault();
+            int curVersion = int.Parse(GetCurrentVersion());
+            return (curVersion - 1).ToString();
         }
-        
+
         /// <summary>
-        /// 判断是否为有效版本号
+        /// 获取版本之间差异文件名
         /// </summary>
-        private static bool IsValidVersion(string version)
+        private static List<string> GetDiffPackageFileName(string packageOutputDirectory, string previousVersion, string manifestFilePath, List<string> abFiles)
         {
-            if (string.IsNullOrEmpty(version))
-                return false;
-                
-            string[] parts = version.Split('.');
-            if (parts.Length != 3)
-                return false;
-                
-            foreach (string part in parts)
+            //差异文件列表
+            List<string> diffFiles = new List<string>();
+            if (!string.IsNullOrEmpty(previousVersion) && previousVersion != "0")
             {
-                if (!int.TryParse(part, out _))
-                    return false;
-            }
-            
-            return true;
-        }
-        
-        /// <summary>
-        /// 比较两个版本号
-        /// </summary>
-        private static int CompareVersions(string versionA, string versionB)
-        {
-            string[] partsA = versionA.Split('.');
-            string[] partsB = versionB.Split('.');
-            
-            for (int i = 0; i < Math.Min(partsA.Length, partsB.Length); i++)
-            {
-                int numA = int.Parse(partsA[i]);
-                int numB = int.Parse(partsB[i]);
+                Debug.Log($"发现上一版本: {previousVersion}");
+                string previousVersionDir = Path.Combine(packageOutputDirectory, previousVersion);
                 
-                if (numA != numB)
-                    return numA.CompareTo(numB);
+                if (Directory.Exists(previousVersionDir))
+                {
+                    // 对比两个版本的资源包
+                    string previousManifestPath = Path.Combine(previousVersionDir, $"DefaultPackage_{previousVersion}.bytes");
+                    diffFiles = CompareVersionPackages(previousManifestPath, manifestFilePath);
+                }
+                else
+                {
+                    Debug.LogWarning($"上一版本目录不存在: {previousVersionDir}, 将打包全部文件");
+                    // diffFiles.AddRange(abFiles);
+                    return abFiles;
+                }
             }
-            
-            return partsA.Length.CompareTo(partsB.Length);
+            else
+            {
+                Debug.LogWarning("找不到上一版本，将打包全部文件");
+                // diffFiles.AddRange(abFiles);
+                return abFiles;
+            }
+            return diffFiles;
         }
         
         /// <summary>

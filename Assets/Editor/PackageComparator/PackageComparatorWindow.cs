@@ -34,7 +34,7 @@ namespace YooAsset.Editor
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("选择补丁包1", GUILayout.MaxWidth(150)))
             {
-                string resultPath = EditorUtility.OpenFilePanel("Find", "Assets/", "bytes");
+                string resultPath = EditorUtility.OpenFilePanel("Find", "Bundles/", "bytes");
                 if (string.IsNullOrEmpty(resultPath))
                     return;
                 _manifestPath1 = resultPath;
@@ -46,7 +46,7 @@ namespace YooAsset.Editor
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("选择补丁包2", GUILayout.MaxWidth(150)))
             {
-                string resultPath = EditorUtility.OpenFilePanel("Find", "Assets/", "bytes");
+                string resultPath = EditorUtility.OpenFilePanel("Find", "Bundles/", "bytes");
                 if (string.IsNullOrEmpty(resultPath))
                     return;
                 _manifestPath2 = resultPath;

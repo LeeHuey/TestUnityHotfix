@@ -61,7 +61,7 @@ namespace TEngine.Editor
             Debug.LogWarning($"Start BuildPackage BuildTarget:{target} outputPath:{outputRoot}");
         }
         
-        [MenuItem("Tools/Quick Build/一键打包AssetBundle", priority = 90)]
+        // [MenuItem("Tools/Quick Build/一键打包AssetBundle", priority = 89)]
         public static void BuildCurrentPlatformAB()
         {
             //默认先构建DLL
@@ -73,7 +73,7 @@ namespace TEngine.Editor
             AssetDatabase.Refresh();
         }
 
-        [MenuItem("Tools/Quick Build/一键打包并进行差异化对比", priority = 91)]
+        [MenuItem("Tools/Quick Build/一键生成增量补丁包", priority = 90)]
         public static void BuildCurrentPlatformABAndDiff()
         {
             BuildCurrentPlatformAB();
@@ -117,7 +117,7 @@ namespace TEngine.Editor
             return target;
         }
 
-        private static void BuildInternal(BuildTarget buildTarget, string outputRoot, string packageVersion = "1.0",
+        private static void BuildInternal(BuildTarget buildTarget, string outputRoot, string packageVersion = "1",
             EBuildPipeline buildPipeline = EBuildPipeline.ScriptableBuildPipeline)
         {
             Debug.Log($"开始构建 : {buildTarget}");
@@ -278,6 +278,9 @@ namespace TEngine.Editor
             }
         }
 
+        /// <summary>
+        /// 获取当前补丁包版本
+        /// </summary>
         private static string GetBuildPackageVersion()
         {
             // 读取当前版本号
@@ -287,16 +290,12 @@ namespace TEngine.Editor
             }
             else
             {
-                currentVersion = "1.0.0"; // 初始版本
+                currentVersion = "0"; // 初始版本
             }
 
-            // 分割当前版本号
-            var versionParts = currentVersion.Split('.');
-            int patchVersion = int.Parse(versionParts[2]);
-
-            // 递增补丁版本号
+            int patchVersion = int.Parse(currentVersion);
             patchVersion++;
-            currentVersion = $"{versionParts[0]}.{versionParts[1]}.{patchVersion}";
+            currentVersion = patchVersion.ToString();
 
             // 将新版本号写入文件
             File.WriteAllText(versionFilePath, currentVersion);
