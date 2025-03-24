@@ -179,14 +179,11 @@ namespace TEngine.Editor
             foreach (var file in Directory.GetFiles(packageOutputDirectory))
             {
                 string fileName = Path.GetFileName(file);
-                
-                // 跳过清单文件和版本文件
-                if (fileName == manifestFileName || 
-                    fileName == "DefaultPackage.version" ||
-                    fileName == "version.txt")
-                    continue;
-                // Debug.Log($"CopyFileNamesToList abFiles: {fileName}");
-                abFiles.Add(fileName);
+                if (fileName.EndsWith(".bundle", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Debug.Log($"CopyFileNamesToList abFiles: {fileName}");
+                    abFiles.Add(fileName);
+                }
             }
             return abFiles;
         }
