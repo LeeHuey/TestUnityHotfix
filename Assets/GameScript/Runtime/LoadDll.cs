@@ -241,7 +241,8 @@ public class LoadDll : MonoBehaviour
     private string GetYooAssetsSandboxPath()
     {
         // YooAssets默认的沙盒根路径
-        return Path.Combine(Application.persistentDataPath, "YooAssets");
+        // return Path.Combine(Application.persistentDataPath, "YooAssets", "DefaultPackage");
+        return Path.Combine("/Users/lixu/Desktop/YooAssets", "DefaultPackage");
     }
     
     // 计算MD5
@@ -285,17 +286,17 @@ public class LoadDll : MonoBehaviour
             Debug.Log($"初始化YooAsset，沙盒路径: {sandboxPath}");
             
             // 检查是否需要手动寻找DLL (直接工作保障方案)
-            PrepareHotUpdateDlls();
-            
-            // 检查当前热更版本号
-            string manifestVersion = "1"; // 从沙盒目录结构看，清单版本号是1
-            Debug.Log($"热更清单版本号: {manifestVersion}");
+            // PrepareHotUpdateDlls();
             
             // 配置离线模式参数
             createParameters = new OfflinePlayModeParameters();
-            // 设置PackageRoot为热更资源的沙盒路径，确保路径不要以/结尾防止URL格式问题
-            string formattedSandboxPath = sandboxPath.TrimEnd('/');
+            
+            string formattedSandboxPath = sandboxPath;
+            Debug.Log($"热更资源沙盒路径: {formattedSandboxPath}");
+            
+            // 配置文件系统参数
             createParameters.BuildinFileSystemParameters = FileSystemParameters.CreateDefaultBuildinFileSystemParameters(null, formattedSandboxPath);
+            // createParameters.BuildinFileSystemParameters = FileSystemParameters.CreateDefaultBuildinFileSystemParameters();
             
             // 保存package引用
             _defaultPackage = package;
@@ -307,6 +308,7 @@ public class LoadDll : MonoBehaviour
         }
         
         // 开始异步初始化包
+        Debug.Log("开始初始化资源包...");
         var initOperation = _defaultPackage.InitializeAsync(createParameters);
         yield return initOperation;
         
@@ -316,35 +318,22 @@ public class LoadDll : MonoBehaviour
             yield break;
         }
         
-        Debug.Log("资源包初始化成功，开始加载资源...");
+        Debug.Log("资源包初始化成功，开始更新清单...");
         
-        // 检查是否有清单文件
-        string sandboxRoot = GetYooAssetsSandboxPath();
-        string manifestPath = Path.Combine(sandboxRoot, "DefaultPackage_1.bytes");
-        string hashPath = Path.Combine(sandboxRoot, "DefaultPackage_1.hash");
-        string versionPath = Path.Combine(sandboxRoot, "DefaultPackage.version");
+        // 开始异步更新清单文件
+        var manifestOperation = _defaultPackage.UpdatePackageManifestAsync("1");
+        yield return manifestOperation;
         
-        Debug.Log($"检查清单文件是否存在:\n" +
-                 $"清单文件: {manifestPath} 存在={File.Exists(manifestPath)}\n" +
-                 $"Hash文件: {hashPath} 存在={File.Exists(hashPath)}\n" +
-                 $"版本文件: {versionPath} 存在={File.Exists(versionPath)}");
-        
-        // 如果清单文件不存在，创建一个简单的版本文件
-        if (!File.Exists(versionPath))
+        if (manifestOperation.Status != EOperationStatus.Succeed)
         {
-            try
-            {
-                File.WriteAllText(versionPath, "1");
-                Debug.Log($"创建了版本文件: {versionPath}");
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError($"创建版本文件失败: {ex.Message}");
-            }
+            Debug.LogError($"资源清单加载失败：{manifestOperation.Error}");
+            yield break;
         }
+
+        Debug.Log("资源清单加载成功，开始加载资源...");
         
         // 加载所需的DLL资源
-        var assets = new List<string> { "HotUpdate.dll" }.Concat(AOTMetaAssemblyFiles).ToList();
+        var assets = new List<string> { "TestHotFix.dll" }.Concat(AOTMetaAssemblyFiles).ToList();
         bool allSuccess = true;
         
         foreach (var asset in assets)
@@ -448,9 +437,9 @@ public class LoadDll : MonoBehaviour
         Debug.Log("开始加载热更新DLL");
         // 加载热更dll
 #if !UNITY_EDITOR
-        _hotUpdateAss = Assembly.Load(ReadBytesFromStreamingAssets("HotUpdate.dll"));
+        _hotUpdateAss = Assembly.Load(ReadBytesFromStreamingAssets("TestHotFix.dll"));
 #else
-        _hotUpdateAss = System.AppDomain.CurrentDomain.GetAssemblies().First(a => a.GetName().Name == "HotUpdate");
+        _hotUpdateAss = System.AppDomain.CurrentDomain.GetAssemblies().First(a => a.GetName().Name == "TestHotFix");
 #endif
         Debug.Log("热更新DLL加载完成");
     }
@@ -459,10 +448,11 @@ public class LoadDll : MonoBehaviour
     {
         Debug.Log("运行热更代码");
         // 通过实例化assetbundle中的资源，还原资源上的热更新脚本
-        var package = YooAssets.GetPackage("DefaultPackage");
-        var handle = package.LoadAssetAsync<GameObject>("Cube");
-        yield return handle;
-        handle.Completed += Handle_Completed;
+        // var package = YooAssets.GetPackage("DefaultPackage");
+        // var handle = package.LoadAssetAsync<GameObject>("Cube");
+        // yield return handle;
+        // handle.Completed += Handle_Completed;
+        yield return null;
     }
 
     private void Handle_Completed(AssetHandle obj)
@@ -595,85 +585,85 @@ public class LoadDll : MonoBehaviour
 }
 
 // 热更新信息类
-[System.Serializable]
-public class HotUpdateInfo
-{
-    public Current current;
-    public Resource[] resources;
-    public string host;
-    public string updateurl;
-    public CfgData cfg_data;
-    public int apk_version;
-    public string voice_url_pre;
-    public string voice_upload_url;
-    public string tcp_cfg;
-    public Rate rate;
-    public string battle_url_pre;
-    public Maintain maintain;
-    public int isinreview;
-    public string alipay_url;
-    public string wechatpay_url;
-    public string quickpay_callback_url;
-    public int pay_test;
-    public int is_999;
-}
+// [System.Serializable]
+// public class HotUpdateInfo
+// {
+//     public Current current;
+//     public Resource[] resources;
+//     public string host;
+//     public string updateurl;
+//     public CfgData cfg_data;
+//     public int apk_version;
+//     public string voice_url_pre;
+//     public string voice_upload_url;
+//     public string tcp_cfg;
+//     public Rate rate;
+//     public string battle_url_pre;
+//     public Maintain maintain;
+//     public int isinreview;
+//     public string alipay_url;
+//     public string wechatpay_url;
+//     public string quickpay_callback_url;
+//     public int pay_test;
+//     public int is_999;
+// }
 
-[System.Serializable]
-public class Current
-{
-    public string coreversion;
-    public string cppversion;
-    public string resversion;
-}
+// [System.Serializable]
+// public class Current
+// {
+//     public string coreversion;
+//     public string cppversion;
+//     public string resversion;
+// }
 
-[System.Serializable]
-public class Resource
-{
-    public string file;
-    public string md5;
-    public string size;
-}
+// [System.Serializable]
+// public class Resource
+// {
+//     public string file;
+//     public string md5;
+//     public string size;
+// }
 
-[System.Serializable]
-public class CfgData
-{
-    public int version;
-    public string md5;
-    public string size;
-    public string url;
-}
+// [System.Serializable]
+// public class CfgData
+// {
+//     public int version;
+//     public string md5;
+//     public string size;
+//     public string url;
+// }
 
-[System.Serializable]
-public class Rate
-{
-    public int show;
-}
+// [System.Serializable]
+// public class Rate
+// {
+//     public int show;
+// }
 
-[System.Serializable]
-public class Maintain
-{
-    public int state;
-    public int end;
-}
+// [System.Serializable]
+// public class Maintain
+// {
+//     public int state;
+//     public int end;
+// }
 
-// 后台线程任务帮助类
-public class WaitForThreadedTask : CustomYieldInstruction
-{
-    private bool _isDone;
-    private System.Func<bool> _action;
+// // 后台线程任务帮助类
+// public class WaitForThreadedTask : CustomYieldInstruction
+// {
+//     private bool _isDone;
+//     private System.Func<bool> _action;
 
-    public WaitForThreadedTask(System.Func<bool> action)
-    {
-        _action = action;
-        _isDone = false;
-        System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(RunAction));
-    }
+//     public WaitForThreadedTask(System.Func<bool> action)
+//     {
+//         _action = action;
+//         _isDone = false;
+//         System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(RunAction));
+//     }
 
-    private void RunAction(object state)
-    {
-        _action();
-        _isDone = true;
-    }
+//     private void RunAction(object state)
+//     {
+//         _action();
+//         _isDone = true;
+//     }
 
-    public override bool keepWaiting => !_isDone;
-}
+//     public override bool keepWaiting => !_isDone;
+// }
