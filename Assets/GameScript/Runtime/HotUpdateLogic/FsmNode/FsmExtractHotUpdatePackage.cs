@@ -70,9 +70,9 @@ internal class FsmExtractHotUpdatePackage : IStateNode
         Debug.Log($"热更包解压完成，解压路径: {extractPath}");
         
         // 更新本地版本号
-        // _hotUpdateManager.LocalResVersion = _hotUpdateManager.HotUpdateInfo.current.resversion;
-        // PlayerPrefs.SetString("LocalResVersion", _hotUpdateManager.LocalResVersion);
-        // PlayerPrefs.Save();
+        _hotUpdateManager.LocalResVersion = _hotUpdateManager.HotUpdateInfo.current.resversion;
+        PlayerPrefs.SetString("LocalResVersion", _hotUpdateManager.LocalResVersion);
+        PlayerPrefs.Save();
         
         Debug.Log($"热更新完成，当前版本: {_hotUpdateManager.LocalResVersion}");
         

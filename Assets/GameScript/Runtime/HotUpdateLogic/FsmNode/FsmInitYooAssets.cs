@@ -121,8 +121,17 @@ internal class FsmInitYooAssets : IStateNode
         else
         {
             // 离线模式下更新清单
-            Debug.Log($"离线模式下更新清单，版本号: {_hotUpdateManager.LocalResVersion}");
-            manifestOperation = package.UpdatePackageManifestAsync(_hotUpdateManager.LocalResVersion);
+            string versionFromFile = ReadDefaultPackageVersion();
+            if (!string.IsNullOrEmpty(versionFromFile))
+            {
+                Debug.Log($"离线模式下更新清单，使用版本文件中的版本号: {versionFromFile}");
+                manifestOperation = package.UpdatePackageManifestAsync(versionFromFile);
+            }
+            else
+            {
+                Debug.Log($"版本文件读取失败，使用本地版本号: {_hotUpdateManager.LocalResVersion}");
+                manifestOperation = package.UpdatePackageManifestAsync(_hotUpdateManager.LocalResVersion);
+            }
         }
         
         // 等待清单更新操作完成
@@ -148,5 +157,42 @@ internal class FsmInitYooAssets : IStateNode
         
         // 切换到加载热更DLL状态
         _machine.ChangeState<FsmLoadHotUpdateDlls>();
+    }
+    
+    /// <summary>
+    /// 读取DefaultPackage.version文件中的版本号
+    /// </summary>
+    /// <returns>版本号字符串，如果读取失败则返回空字符串</returns>
+    private string ReadDefaultPackageVersion()
+    {
+        try
+        {
+            // 优先尝试从沙盒路径读取
+            string sandboxPath = _hotUpdateManager.GetYooAssetsSandboxPath();
+            string versionFilePath = Path.Combine(sandboxPath, "DefaultPackage.version");
+            
+            // 如果沙盒中不存在，尝试从StreamingAssets读取
+            if (!File.Exists(versionFilePath))
+            {
+                versionFilePath = Path.Combine(Application.streamingAssetsPath, "YooAssets", "DefaultPackage.version");
+            }
+            
+            if (File.Exists(versionFilePath))
+            {
+                string versionContent = File.ReadAllText(versionFilePath).Trim();
+                Debug.Log($"成功从 {versionFilePath} 读取版本号: {versionContent}");
+                return versionContent;
+            }
+            else
+            {
+                Debug.LogWarning($"未找到版本文件: {versionFilePath}");
+                return string.Empty;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"读取版本文件异常: {ex.Message}");
+            return string.Empty;
+        }
     }
 } 

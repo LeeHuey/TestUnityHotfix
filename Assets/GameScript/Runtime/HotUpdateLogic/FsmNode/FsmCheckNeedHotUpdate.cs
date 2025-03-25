@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UniFramework.Machine;
+using YooAsset;
 
 internal class FsmCheckNeedHotUpdate : IStateNode
 {
@@ -40,6 +41,10 @@ internal class FsmCheckNeedHotUpdate : IStateNode
     
     private bool NeedHotUpdate()
     {
+        if (_hotUpdateManager.PlayMode == EPlayMode.EditorSimulateMode) {
+            return false;
+        }
+
         if (_hotUpdateManager.HotUpdateInfo == null || string.IsNullOrEmpty(_hotUpdateManager.HotUpdateInfo.current.resversion))
         {
             Debug.LogWarning("热更信息无效，跳过热更新");

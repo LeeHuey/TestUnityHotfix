@@ -17,8 +17,6 @@ public class LoadDllFsm : MonoBehaviour
     
     void Start()
     {
-        PlayMode = EPlayMode.EditorSimulateMode;
-
         // 初始化事件系统
         UniEvent.Initalize();
 
