@@ -160,7 +160,7 @@ namespace TEngine.Editor
             buildParameters.FileNameStyle =  EFileNameStyle.BundleName_HashName;
             buildParameters.BuildinFileCopyOption = EBuildinFileCopyOption.None;
             buildParameters.BuildinFileCopyParams = string.Empty;
-            buildParameters.EncryptionServices = CreateEncryptionInstance("DefaultPackage",buildPipeline);
+            // buildParameters.EncryptionServices = CreateEncryptionInstance("DefaultPackage",buildPipeline);
             buildParameters.EnableSharePackRule = true; // 启用共享资源打包
             buildParameters.BuildBundleType = (int)EBuildBundleType.AssetBundle; //必须指定资源包类型
             buildParameters.ClearBuildCacheFiles = false; //不清理构建缓存，启用增量构建，可以提高打包速度！

@@ -179,11 +179,12 @@ namespace TEngine.Editor
             foreach (var file in Directory.GetFiles(packageOutputDirectory))
             {
                 string fileName = Path.GetFileName(file);
-                if (fileName.EndsWith(".bundle", StringComparison.OrdinalIgnoreCase))
-                {
-                    // Debug.Log($"CopyFileNamesToList abFiles: {fileName}");
-                    abFiles.Add(fileName);
-                }
+                // if (fileName.EndsWith(".bundle", StringComparison.OrdinalIgnoreCase))
+                // {
+                //     // Debug.Log($"CopyFileNamesToList abFiles: {fileName}");
+                //     abFiles.Add(fileName);
+                // }
+                abFiles.Add(fileName);
             }
             return abFiles;
         }
