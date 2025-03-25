@@ -34,66 +34,117 @@ internal class FsmInitYooAssets : IStateNode
     
     private IEnumerator InitYooAssets()
     {
-        // 创建初始化参数
-        OfflinePlayModeParameters createParameters = null;
+        // 创建默认包
+        string packageName = "DefaultPackage";
+        var package = YooAssets.TryGetPackage(packageName);
+        if (package == null)
+            package = YooAssets.CreatePackage(packageName);
+        YooAssets.SetDefaultPackage(package);
+        Debug.Log($"创建包 {packageName} 成功");
+        
+        // 保存package引用
+        _hotUpdateManager.DefaultPackage = package;
+        
+        // 根据运行模式初始化资源系统
+        InitializationOperation initOperation = null;
         
         try
         {
-            // // 初始化资源系统
-            // YooAssets.Initialize();
-            // Debug.Log("YooAssets初始化成功");
-
-            // 创建默认包
-            string packageName = "DefaultPackage";
-            var package = YooAssets.TryGetPackage(packageName);
-            if (package == null)
-                package = YooAssets.CreatePackage(packageName);
-            YooAssets.SetDefaultPackage(package);
-            Debug.Log($"创建包 {packageName} 成功");
+            // 获取当前的运行模式
+            EPlayMode playMode = _hotUpdateManager.PlayMode;
+            Debug.Log($"当前运行模式: {playMode}");
             
-            // 获取热更解压的沙盒路径
-            string sandboxPath = _hotUpdateManager.GetYooAssetsSandboxPath();
-            Debug.Log($"初始化YooAsset，沙盒路径: {sandboxPath}");
+            if (playMode == EPlayMode.EditorSimulateMode)
+            {
+                #if UNITY_EDITOR
+                // 编辑器模拟模式
+                Debug.Log("使用编辑器模拟模式");
+                
+                // 创建编辑器模拟模式的参数
+                var buildResult = EditorSimulateModeHelper.SimulateBuild("DefaultPackage");    
+                var packageRoot = buildResult.PackageRootDirectory;
+                Debug.Log($"编辑器模拟模式资源包根目录: {packageRoot}");
+                var initParameters = new EditorSimulateModeParameters();
+                initParameters.EditorFileSystemParameters = FileSystemParameters.CreateDefaultEditorFileSystemParameters(packageRoot);
+                initOperation = package.InitializeAsync(initParameters);
+                #else
+                Debug.LogError("EditorSimulateMode只能在编辑器下使用，已切换为离线模式");
+                playMode = EPlayMode.OfflinePlayMode;
+                _hotUpdateManager.PlayMode = playMode;
+                #endif
+            }
             
-            // 配置离线模式参数
-            createParameters = new OfflinePlayModeParameters();
-            
-            // 配置文件系统参数
-            createParameters.BuildinFileSystemParameters = FileSystemParameters.CreateDefaultBuildinFileSystemParameters(null, sandboxPath);
-            
-            // 保存package引用
-            _hotUpdateManager.DefaultPackage = package;
+            // 离线模式
+            if (playMode == EPlayMode.OfflinePlayMode)
+            {
+                var initParameters = new OfflinePlayModeParameters();
+                // 获取热更解压的沙盒路径
+                string sandboxPath = _hotUpdateManager.GetYooAssetsSandboxPath();
+                Debug.Log($"使用离线模式，沙盒路径: {sandboxPath}");
+                initParameters.BuildinFileSystemParameters = FileSystemParameters.CreateDefaultBuildinFileSystemParameters(null, sandboxPath);
+                initOperation = package.InitializeAsync(initParameters);
+            }
         }
         catch (Exception ex)
         {
             Debug.LogError($"YooAssets初始化异常: {ex.Message}\n{ex.StackTrace}");
+            _machine.ChangeState<FsmLoadHotUpdateDlls>();
             yield break;
         }
-        
+            
         // 开始异步初始化包
-        Debug.Log("开始初始化资源包...");
-        var initOperation = _hotUpdateManager.DefaultPackage.InitializeAsync(createParameters);
+        Debug.Log($"开始初始化资源包...");
         yield return initOperation;
         
-        if (initOperation.Status != EOperationStatus.Succeed)
+        if (initOperation == null || initOperation.Status != EOperationStatus.Succeed)
         {
-            Debug.LogError($"资源包初始化失败：{initOperation.Error}");
+            Debug.LogError($"资源包初始化失败：{(initOperation != null ? initOperation.Error : "未知错误")}");
+            _machine.ChangeState<FsmLoadHotUpdateDlls>();
             yield break;
         }
         
         Debug.Log("资源包初始化成功，开始更新清单...");
         
-        // 开始异步更新清单文件
-        var manifestOperation = _hotUpdateManager.DefaultPackage.UpdatePackageManifestAsync(_hotUpdateManager.LocalResVersion);
-        yield return manifestOperation;
+        // 更新资源清单
+        bool manifestUpdateSuccess = false;
+        // YooAsset清单更新操作
+        AsyncOperationBase manifestOperation = null;
         
-        if (manifestOperation.Status != EOperationStatus.Succeed)
+        if (_hotUpdateManager.PlayMode == EPlayMode.EditorSimulateMode)
         {
-            Debug.LogError($"资源清单加载失败：{manifestOperation.Error}");
+            #if UNITY_EDITOR
+            Debug.Log("编辑器模拟模式下更新清单");
+            // 在编辑器模拟模式下，使用编辑器模拟资源清单
+            manifestOperation = package.UpdatePackageManifestAsync("Simulate");
+            #endif
+        }
+        else
+        {
+            // 离线模式下更新清单
+            Debug.Log($"离线模式下更新清单，版本号: {_hotUpdateManager.LocalResVersion}");
+            manifestOperation = package.UpdatePackageManifestAsync(_hotUpdateManager.LocalResVersion);
+        }
+        
+        // 等待清单更新操作完成
+        if (manifestOperation != null)
+        {
+            yield return manifestOperation;
+            manifestUpdateSuccess = manifestOperation.Status == EOperationStatus.Succeed;
+            
+            if (!manifestUpdateSuccess)
+            {
+                Debug.LogError($"资源清单更新失败: {manifestOperation.Error}");
+            }
+        }
+        
+        if (!manifestUpdateSuccess)
+        {
+            Debug.LogError("资源清单更新失败，热更新可能无法正常工作");
+            _machine.ChangeState<FsmLoadHotUpdateDlls>();
             yield break;
         }
-
-        Debug.Log("资源清单加载成功");
+        
+        Debug.Log("资源清单更新成功，即将进入下一阶段");
         
         // 切换到加载热更DLL状态
         _machine.ChangeState<FsmLoadHotUpdateDlls>();

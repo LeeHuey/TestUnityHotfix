@@ -36,6 +36,34 @@ internal class FsmLoadHotUpdateDlls : IStateNode
     
     private IEnumerator LoadHotUpdateDlls()
     {
+        // 编辑器模拟模式下不需要加载DLL
+        if (_hotUpdateManager.PlayMode == EPlayMode.EditorSimulateMode)
+        {
+            #if UNITY_EDITOR
+            Debug.Log("编辑器模拟模式下不需要加载DLL文件，直接使用已加载的程序集");
+            
+            // 在编辑器中直接获取程序集引用
+            _hotUpdateManager.HotUpdateAssembly = System.AppDomain.CurrentDomain.GetAssemblies()
+                .FirstOrDefault(a => a.GetName().Name == "TestHotFix");
+                
+            if (_hotUpdateManager.HotUpdateAssembly != null)
+            {
+                Debug.Log($"编辑器中找到热更程序集: {_hotUpdateManager.HotUpdateAssembly.GetName().Name}");
+            }
+            else
+            {
+                Debug.LogWarning("在编辑器中未找到热更程序集，请确保热更程序集已被正确引用");
+            }
+            
+            // 直接进入下一个状态
+            _machine.ChangeState<FsmRunHotUpdateCode>();
+            yield break;
+            #endif
+        }
+        
+        // 非编辑器模拟模式下，需要加载DLL文件
+        Debug.Log("开始加载热更DLL文件");
+        
         // 加载所需的DLL资源
         var assets = new List<string> { "TestHotFix.dll" }.Concat(_hotUpdateManager.AOTMetaAssemblyFiles).ToList();
         bool allSuccess = true;
